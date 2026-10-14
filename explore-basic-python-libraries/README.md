@@ -34,3 +34,7 @@ You cannot build a good ML model blindly. You must see what your data looks like
 **Use Case:** Plotting feature correlations and tracking model loss. Matplotlib helps you visually check if your data has outliers before training. After training, it helps you plot a line chart of the model's accuracy over time to see if it is actually improving.
 
 **Example:** Plotting a scatter plot of "House Size" vs "Price" to confirm there is a linear pattern for a Linear Regression model to learn.
+
+---
+
+*Notes | Day 1*
