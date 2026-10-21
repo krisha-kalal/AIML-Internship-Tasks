@@ -61,7 +61,7 @@ Vectorization means turning different types of data—like text, images, or comp
   - **Term Frequency (TF):**  
     TF = (Number of times a word appears in a document) / (Total number of words in the document)
 
-  - **Inverse Document Frequency (IDF):**  
+  - **Inverse Document Frequency (IDF):** If the word is very common and appears in many documents, this number will approach 0. Otherwise, it will approach 1.
     IDF = log(Total number of documents / Number of documents containing the word)
 
 ---
