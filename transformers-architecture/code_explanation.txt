@@ -1,0 +1,70 @@
+Its core job is simple:
+Given a sequence of input words, predict the VERY NEXT word that should follow.
+For example:
+- Input:  "what" -> "is" -> "python" -> "<EOS>"
+- Output: "it"   -> "is" -> "a"      -> "programming" -> "language" -> "<EOS>"
+
+2. STEP-BY-STEP CODE BREAKDOWN
+STEP 1: TOKENIZATION (Words to Numbers)
+Computers cannot process text directly. 
+- token_to_id gives every unique word an integer index:
+  {'what': 0, 'is': 1, 'python': 2, 'it': 3, ...}
+- Inputs vs. Labels:
+  * Input:  What the model sees at each step.
+  * Labels: The target "next word" shifted by 1 position into the future.
+
+STEP 2: WORD EMBEDDING (nn.Embedding)
+Converting raw IDs into continuous vector space.
+- An integer ID like 2 ('python') carries no spatial or semantic context.
+- The Embedding layer maps each integer ID to a list of numbers (d_model = 2).
+- Example: 2 -> [0.45, -1.21]
+- Over time, words with similar roles end up closer together in this vector space.
+
+STEP 3: POSITIONAL ENCODING (PositionalEncoding)
+Adding word order information.
+- Self-attention on its own is permutation-invariant (it treats sentences like 
+  an unordered bag of words).
+- We compute sine and cosine waves to create a unique "position signal" for 
+  index 0, index 1, index 2, etc.
+- By adding: (Word Vector) + (Position Vector), every token vector now encodes 
+  both WHAT the word is and WHERE it is in the sentence.
+
+STEP 4: CAUSAL SELF-ATTENTION (CausalSelfAttention)
+Allowing words to dynamically interact with each other.
+A. Queries (Q), Keys (K), Values (V):
+   Every token generates 3 internal linear projections:
+   - Query (Q): "What information am I looking for?"
+   - Key (K):   "What information do I contain?"
+   - Value (V): "Here is my actual content payload."
+B. Dot-Product Scores (Q x K^T):
+   Measures how relevant every word in the sequence is to every other word.
+C. Causal Masking (Lower Triangular Mask):
+   The model must NEVER cheat by looking into future tokens.
+   We mask out future token scores by setting their attention values to -infinity.
+   When passed through Softmax, these future connections turn into 0% attention weight.
+D. Output Matrix:
+   Multiplies the attention percentages by the Value (V) matrices to obtain context-aware 
+   word representations.
+
+STEP 5: RESIDUAL CONNECTIONS & LINEAR HEAD (fc_layer)
+Making predictions from hidden features.
+- Residual Connection: We add the input vectors back to the attention outputs
+  (position_encoded + self_attention_values) so original word signals aren't lost.
+- FC Layer (Linear): Takes the 2-dimensional hidden vector and projects it back up 
+  to the full vocabulary size (8 tokens).
+- Output: Logits (raw scores) for every candidate word in the dictionary.
+
+STEP 6: TRAINING LOOP (LightningModule & Loss)
+Learning through backpropagation.
+- Loss Function: nn.CrossEntropyLoss compares predicted logits against actual target labels.
+- Optimizer (Adam): Computes gradients and slightly updates model parameters (52 weights total).
+- Over ~200 epochs, the model updates these weights until its predictions match the dataset sequences.
+
+STEP 7: INFERENCE / AUTO-REGRESSIVE GENERATION
+Generating new text step-by-step.
+1. Pass initial prompt into the model: ["what", "is", "python", "<EOS>"].
+2. Inspect predictions for the VERY LAST position in the sequence (logits[:, -1, :]).
+3. Use torch.argmax to select the token ID with the highest score (e.g., "it").
+4. Append "it" to the sequence, forming a longer input prompt.
+5. Pass the new sequence back in to predict the next word ("is").
+6. Repeat until the model predicts "<EOS>" or reaches max length.
