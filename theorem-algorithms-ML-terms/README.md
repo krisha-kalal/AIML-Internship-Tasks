@@ -106,6 +106,8 @@ Classification is a type of supervised machine learning used to predict categori
 - **Decision Tree Classifier:** Uses decision rules to classify data. It can also be used as a regressor to predict data.
 - **Support Vector Machine (SVM):** Finds a decision boundary that separates classes.
 
+- **All Decision Tree, Random Forest, KNN and SVM machine learning algorithms can be used as classifiers and regressors.**
+
 ## 7. Clustering
 
 Clustering is a type of unsupervised machine learning that groups similar data points together without using predefined target labels.
