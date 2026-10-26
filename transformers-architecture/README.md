@@ -129,4 +129,4 @@ The Transformer architecture combines these components to process input data and
 
 ---
 
-*Notes | Day 8*
+*Notes | Day 8 & Day 9*
