@@ -116,4 +116,4 @@ The loss landscape is a continuous, multidimensional geometric terrain formed by
 
 ---
 
-*Notes | Day 10*
+*Notes | Day 10 & Day 11*
