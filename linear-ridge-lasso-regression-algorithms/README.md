@@ -35,9 +35,7 @@ $$
 - **b₁, b₂, ...:** The feature weights or slopes.
 - **x₁, x₂, ...:** The input features (independent variables).
 
-### Metrics Used to Calculate Errors in the Model
-
-Some of the metric tools that can be used to calculate errors in the model are:
+### Some of the metric tools that can be used to calculate errors in the model are:
 
 1. **MSE (Mean Squared Error)**
 2. **RMSE (Root Mean Squared Error)**
@@ -81,7 +79,7 @@ $$
 - **λ (Lambda):** Controls the strength of the penalty.
 - **bⱼ:** Model coefficients.
 
-### Choosing Between Lasso and Ridge
+### Choosing between Lasso and Ridge
 
 The choice between Lasso and Ridge depends on the specific characteristics of the dataset and the goals of the modeling task:
 
