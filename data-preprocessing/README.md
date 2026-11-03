@@ -16,9 +16,15 @@ Normalization changes feature values to a range between 0 and 1.
 
 **Formula:**
 
-\[
-x'=\frac{x-\min(x)}{\max(x)-\min(x)}
-\]
+```math
+x' = \frac{x-\min(x)}{\max(x)-\min(x)}
+```
+
+Where:
+- `x` = Original value
+- `min(x)` = Minimum value in the dataset
+- `max(x)` = Maximum value in the dataset
+- `x'` = Normalized value (usually between 0 and 1)
 
 #### B. Standardization
 
@@ -26,14 +32,14 @@ Standardization transforms data so that its mean becomes 0 and its standard devi
 
 **Formula:**
 
-\[
-z=\frac{x-\mu}{\sigma}
-\]
+```math
+z = \frac{x-\mu}{\sigma}
+```
 
 Where:
-- \(x\) = Original value
-- \(\mu\) = Mean
-- \(\sigma\) = Standard deviation
+- `x` = Original value
+- `μ` = Mean of the data
+- `σ` = Standard deviation
 
 ### 2. Encoding Techniques
 
