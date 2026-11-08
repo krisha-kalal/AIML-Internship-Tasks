@@ -107,7 +107,8 @@ print("Tokens:", tokens)
 ```
 Output:
 ```text 
-Tokens: ['B', '##ER', '##T', 'understands', 'language', 'context', '.']```
+Tokens: ['B', '##ER', '##T', 'understands', 'language', 'context', '.']
+```
 Special tokens such as `[CLS]` and `[SEP]` are also added when required by the model.
 
 ## 2. RoBERTa (Robustly Optimized BERT Approach)
