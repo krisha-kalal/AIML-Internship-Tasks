@@ -1,0 +1,36 @@
+BERT vs. RoBERTa Code Implementations
+
+1. Difference:
+Both architectures leverage the Hugging Face `Auto` abstraction layer, 
+resulting in identical API structures. The operational divergence lies entirely 
+in the configuration, tokenization strategy, and model architecture targets:
+
+Feature / Line          | BERT Code Pipeline         | RoBERTa Code Pipeline
+------------------------|----------------------------|----------------------------
+Model Weight String     | distilbert-base-uncased... | cardiffnlp/twitter-robert...
+Tokenizer Engine        | WordPiece                  | Byte-Level BPE (GPT-2)
+Output Class Count      | 2 Classes (Binary)         | 3 Classes (Multiclass)
+Target Label Mappings   | POSITIVE / NEGATIVE        | positive / neutral / negative
+
+
+2. Architectural and strategic difference:
+* Tokenization Strategy:
+  - BERT relies on the WordPiece tokenizer, which matches text against a fixed 
+    vocabulary and segments unseen tokens using prefixes (e.g., '##ing').
+  - RoBERTa utilizes a byte-level Byte-Pair Encoding (BPE) engine. By operating 
+    on raw bytes instead of unicode characters, it handles complex symbols, 
+    emojis, unseen words, and slang without reverting to unknown tokens ([UNK]).
+
+* Label Cardinality & Data Distribution:
+  - The default BERT configuration used (SST-2) classifies sentiment purely on a 
+    binary scale (Positive vs. Negative).
+  - The default RoBERTa model used (Twitter-RoBERTa) targets dynamic social media 
+    streams, introducing a distinct 'neutral' label to handle purely informational 
+    or observational text statements.
+
+* Masking Mechanics:
+  - BERT uses Static Masking, where the same token positions are masked across 
+    training epochs, and incorporates a Next Sentence Prediction (NSP) task.
+  - RoBERTa strips the NSP task entirely and implements Dynamic Masking, 
+    randomly altering token masks during execution loops. When combined with a 
+    dataset roughly 10x larger, it offers stronger generalisation vectors.
