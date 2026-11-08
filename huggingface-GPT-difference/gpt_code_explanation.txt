@@ -1,0 +1,52 @@
+GPT model code explanation
+
+This document breaks down the programmatic architecture and functional execution of a generative, autoregressive GPT model using Hugging Face Transformers. Step by step breakdown is as follows:
+
+1. Auto-class architecture (AutoModelForCausalLM):
+   Unlike BERT and RoBERTa which utilize 'AutoModelForSequenceClassification' to 
+   output raw category scores (logits) across discrete classification classes, 
+   GPT requires an 'AutoModelForCausalLM' architecture. 
+   - "Causal Language Modeling" restricts the attention mechanism to look only 
+     at previous tokens (left-to-right generation). It prohibits the model from 
+     peeking ahead at future words.
+   - It outputs an array of logits corresponding to every word in its entire 
+     vocabulary, computing the statistical likelihood of what the next word 
+     should be.
+
+2. Pad token alignment correction:
+   GPT models are natively trained on open-ended text without formal sentence 
+   boundaries. Standard BERT-style models reserve an explicit padding token ([PAD]) 
+   to balance matrix arrays during batch training. 
+   - GPT-2 does not possess a native padding token. 
+   - Assigning 'tokenizer.pad_token = tokenizer.eos_token' enforces the model 
+     to substitute missing elements with its End-Of-Sequence token, eliminating 
+     runtime dimension compilation errors during array operations.
+
+3. Generation mechanics and parameter tuning:
+   The internal loop of feeding the model's new word prediction back into its 
+   own input array is abstracted by the 'model.generate()' execution block. 
+   Rather than picking the single most predictable word every time (Greedy Search, 
+   which causes loops and repetitive phrasing), the algorithm balances randomness 
+   via specific controls:
+   - do_sample=True: Enforces probabilistic sampling rather than deterministic, 
+     greedy top-1 selection.
+   - temperature=0.7: Flattens or sharpens the softmax output probability curve. 
+     A value of 0.7 scales down extreme probabilities slightly, making text 
+     more fluid and natural without descending into chaotic randomness.
+   - top_k=50: Discards everything outside the top 50 highest-scoring tokens, 
+     preventing the model from picking completely nonsensical words.
+   - top_p=0.92: Nucleus Sampling. Accumulates the probabilities of the top 
+     words from highest to lowest and dynamically truncates the pool as soon as 
+     their combined percentage hits 92%. This scales the pool dynamically based 
+     on how certain the model is.
+   - no_repeat_ngram_size=2: A protective constraint preventing any phrase 
+     of 2 words (bigram) from appearing twice, completely blocking stuttering 
+     loops.
+
+4. Inference optimization and decoding:
+   - torch.no_grad(): Completely deactivates the backpropagation tracking engine. 
+     Because the weights do not need to update during text generation, this 
+     reduces graphics memory (VRAM) overhead drastically and speeds up calculation.
+   - tokenizer.decode(): Automatically converts raw numeric sequence tensors back 
+     into clean, readable textual formatting while wiping hidden structure 
+     elements (like `<|endoftext|>`) via 'skip_special_tokens=True'.
