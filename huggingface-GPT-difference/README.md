@@ -167,4 +167,4 @@ Transformer-based models are designed for different purposes. Some focus on unde
 
 ---
 
-*Notes | Day 21*
+*Notes | Day 21 & Day 22*
