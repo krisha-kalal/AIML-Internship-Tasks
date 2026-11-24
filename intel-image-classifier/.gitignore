@@ -1,0 +1,9 @@
+# Ignore large dataset files and archives
+data/
+intel_data/
+*.zip
+
+# Ignore Python & Jupyter cache
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
