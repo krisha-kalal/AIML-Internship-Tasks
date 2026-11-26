@@ -1,0 +1,27 @@
+Is 61% accuracy justifiable? How to overcome that accuracy and what could be the 
+reasons for that:
+
+1. CPU Training Subset Constraint: 
+To meet CPU runtime limits without GPU quota, the custom CNN was trained on a 
+balanced 600-image subset for 5 epochs rather than the full 14,034-image training 
+set for 15–20 epochs (which typically pushes a custom 4-block CNN to ~75%–80%).
+
+2. Dense Head Parameter Concentration: 
+96.4% of the CNN's parameters (10.6M out of 11.01M) sit inside fc1 (256×9×9 → 512),
+increasing overfitting risk (83.2% train vs. 67.2% val accuracy). Replacing 
+Flatten + fc1 with nn.AdaptiveAvgPool2d((1, 1)) (Global Average Pooling) would 
+cut parameters by >95% and improve generalization.
+
+3. Ambiguous Multi-Object Scene Labels: 
+Single-label classification forces the model to pick one label even when an image 
+legitimately contains both a street and buildings or a glacier next to a mountain.
+
+4. Train on the Full Dataset (14,034 images) for 15–25 Epochs on GPU:
+Scaling up from the 600-image CPU subset (5 epochs) to all 14,034 training images 
+(20 epochs) typically boosts this exact 4-block custom CNN from 61.5% into the 
+76%–80% range.
+
+5. Deeper Pretrained Backbones & Ensembling (ResNet-50, EfficientNet-B0, ConvNeXt):
+Fine-tuning deeper pretrained architectures—or averaging predicted probabilities 
+(Soft Voting Ensemble) from your Custom CNN + ResNet-18—regularly pushes Intel 
+Image Classification test accuracy past 92%–94%.
